@@ -15,11 +15,7 @@ A project by **The.Zane.Nelson**, designed to bring stunning wallpapers directly
 
 ---
 
-## ⌨️ **Dynamic Typing Animation**
-<p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/d/d6/Typing_dots.gif" alt="Typing Animation" width="200">
-</p>
-<p align="center">
+## 
   <em>
     Badass Wallpaper Official Channel 🌟<br>
     Made by The.Zane.Nelson 💻<br>
