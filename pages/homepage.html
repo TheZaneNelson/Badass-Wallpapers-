@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BADASS WALLPAPERS – HOME OF LEGENDARY WALLPAPERS, WALLPAPER EDITS AND WALLPAPER RELATED CONTENT">
+    <title>Badass Wallpapers</title>
+    <style>
+        :root {
+            --primary: #facc15;
+            --dark: #1a202c;
+            --gray: #2d3748;
+            --light: #e2e8f0;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: white;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .header {
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('../assets/yt\ banner\ bw\ \(1\).png');
+            background-size: cover;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        #search {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 50px;
+            border: none;
+            background: var(--gray);
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background: var(--gray);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .category-label {
+            padding: 1rem;
+            text-align: center;
+            font-weight: bold;
+            background: var(--primary);
+            color: var(--dark);
+        }
+
+        #wallpapers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .wallpaper-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .wallpaper-card:hover {
+            transform: scale(1.03);
+        }
+
+        .wallpaper-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .wallpaper-card:hover .overlay {
+            opacity: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: var(--primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .wallpaper-card {
+                height: 250px;
+            }
+        }
+        .loader {
+       border: 4px solid var(--gray);
+       border-top: 4px solid var(--primary);
+       border-radius: 50%;
+       width: 40px;
+       height: 40px;
+       animation: spin 1s linear infinite;
+       margin: 2rem auto;
+   }
+
+   @keyframes spin {
+       0% { transform: rotate(0deg); }
+       100% { transform: rotate(360deg); }
+   }
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>BADASS WALLPAPERS</h1>
+        <div class="search-bar">
+            <input type="search" id="search" placeholder="Search for wallpapers...">
+        </div>
+    </header>
+
+    <section class="categories">
+        <div class="category-card">
+            <img src="https://source.unsplash.com/random/600x400?dog" class="category-image" alt="Dogs">
+            <div class="category-label">Canine Collection</div>
+        </div>
+        <div class="category-card">
+            <img src="https://source.unsplash.com/random/600x400?cat" class="category-image" alt="Cats">
+            <div class="category-label">Feline Fantasy</div>
+        </div>
+        <div class="category-card">
+            <img src="https://source.unsplash.com/random/600x400?flower" class="category-image" alt="Flowers">
+            <div class="category-label">Floral Patterns</div>
+        </div>
+    </section>
+
+    <main id="wallpapers"></main>
+
+    <script>
+        const API_KEY = "3yhCBBe3dnxXnCuegDHCWL1cskFMjC4nKsS1kxZOnOkB6H5r201RRxZX";
+        const BASE_URL = "https://api.pexels.com/v1/";
+        
+        const wallpapersContainer = document.getElementById('wallpapers');
+        const searchInput = document.getElementById('search');
+
+        // Fetch initial wallpapers
+        fetchWallpapers('nature');
+
+        // Search functionality
+        searchInput.addEventListener('input', debounce(handleSearch, 500));
+
+        async function fetchWallpapers(query) {
+            try {
+                const url = query ? 
+                    `${BASE_URL}search?query=${query}&per_page=15` : 
+                    `${BASE_URL}curated?per_page=15`;
+                
+                const response = await fetch(url, {
+                    headers: { Authorization: API_KEY }
+                });
+                const data = await response.json();
+                displayWallpapers(data.photos);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function displayWallpapers(photos) {
+            wallpapersContainer.innerHTML = photos.map(photo => `
+                <div class="wallpaper-card">
+                    <img src="${photo.src.large2x}" class="wallpaper-image" alt="${photo.alt}">
+                    <div class="overlay">
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick="downloadWallpaper('${photo.src.original}')">
+                                ↓ Download
+                            </button>
+                            <button class="action-btn" onclick="shareWallpaper('${photo.src.original}')">
+                                ↗ Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleSearch(e) {
+            fetchWallpapers(e.target.value);
+        }
+
+        function debounce(func, timeout = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+
+
+        function shareWallpaper(url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Check out this badass wallpaper!',
+                    url: url
+                }).catch(console.error);
+            } else {
+                // Fallback for desktop
+                prompt('Copy this link to share:', url);
+            }
+        }
+
+        function downloadWallpaper(url) {
+            fetch(url)
+           .then(response => response.blob())
+           .then(blob => {
+               const link = document.createElement('a');
+               link.href = URL.createObjectURL(blob);
+               link.download = 'badass-wallpaper.jpg';
+               document.body.appendChild(link);
+               link.click();
+               URL.revokeObjectURL(link.href);
+               document.body.removeChild(link);
+           });
+   }
+   document.querySelectorAll('.category-card').forEach(card => {
+       card.addEventListener('click', () => {
+           const category = card.querySelector('.category-label').textContent;
+           fetchWallpapers(category.split(' ')[0].toLowerCase());
+       });
+   });
+
+   async function fetchWallpapers(query) {
+     wallpapersContainer.innerHTML = '<div class="loader"></div>';}
+    // ... rest of the function
+    </script>
+</body>
+</html>
