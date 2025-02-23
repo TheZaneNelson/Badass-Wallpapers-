@@ -23,43 +23,7 @@ A project by **The.Zane.Nelson**, designed to bring stunning wallpapers directly
 
 ---
 
-## ⌨️ **Dynamic Typer Animation**
-<div style="font-size: 1.5em; font-family: 'Courier New', Courier, monospace;">
-  <span id="typewriter"></span>
-</div>
-<script>
-  const phrases = [
-    "Badass Wallpaper Official Channel 🌟",
-    "Made by The.Zane.Nelson 💻",
-    "Created on: December 23, 2024 🗓️",
-    "Follow us on Social Media 🔗"
-  ];
-  let i = 0, j = 0, currentPhrase = "", isDeleting = false;
-  const speed = 150; // Typing speed
 
-  function type() {
-    if (i < phrases.length) {
-      currentPhrase = isDeleting
-        ? phrases[i].substring(0, j--)
-        : phrases[i].substring(0, j++);
-
-      document.getElementById("typewriter").innerText = currentPhrase;
-
-      if (!isDeleting && j === phrases[i].length) {
-        setTimeout(() => (isDeleting = true), 1000);
-      } else if (isDeleting && j === 0) {
-        i++;
-        j = 0;
-        isDeleting = false;
-      }
-      setTimeout(type, isDeleting ? speed / 2 : speed);
-    }
-  }
-
-  type();
-</script>
-
----
 
 ## 🌐 **Connect with Us**
 <p align="center">
