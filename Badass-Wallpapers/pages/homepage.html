@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="BADASS WALLPAPERS – HOME OF LEGENDARY WALLPAPERS, WALLPAPER EDITS AND WALLPAPER RELATED CONTENT" />
   <title>Badass Wallpapers</title>
+  <!-- Favicon (Head Title Image) -->
+  <link rel="icon" href="../Favcon.jpg" type="image/png"/>
+  <!-- Vercel Analytics -->
+  <script>
+    window.va = window.va || function () {
+      (window.vaq = window.vaq || []).push(arguments);
+    };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <!-- End Vercel Analytics -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --primary: #facc15;
@@ -319,19 +331,6 @@
     </div>
   </header>
 
-  <!-- CATEGORIES SECTION -->
-  <!-- <div class="categories-wrapper">
-    <div class="categories" id="categoriesContainer">  -->
-      <!-- Categories cards will be injected here -->
-    <!--</div> -->
-    <!-- Arrow Icon (visible on larger screens) -->
-    <!-- <div class="arrow-icon" id="categoriesArrow">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M12 4l1.41 1.41L8.83 10H20v2H8.83l4.58 4.59L12 18l-8-8z"/>
-      </svg>
-    </div>
-  </div> -->
-
   <!-- WALLPAPERS CONTAINER -->
   <main id="wallpapersContainer"></main>
 
@@ -515,7 +514,7 @@
       fetchWallpapers(currentQuery);
     });
     // Initialize with default query
-    fetchWallpapers('forest');
+    fetchWallpapers('sport car');
 
     /* ===== Share and Download Functions ===== */
     function shareWallpaper(url) {
@@ -534,7 +533,7 @@
         .then(blob => {
           const link = document.createElement('a');
           link.href = URL.createObjectURL(blob);
-          link.download = `badass-wallpaperr-${Date.now()}.jpg`;
+          link.download = `badass-wallpaper-${Date.now()}.jpg`;
           document.body.appendChild(link);
           link.click();
           URL.revokeObjectURL(link.href);
@@ -542,41 +541,7 @@
         });
     }
 
-    /* ===== Categories Section ===== */
-    // const categoriesContainer = document.getElementById('categoriesContainer');
-    // // Array of random categories – you can add more as desired
-    // const randomCategories = ['Dogs', 'Cats', 'Flowers', 'Nature', 'City', 'Abstract', 'Space', 'Cars', 'Mountains', 'Beaches'];
-    // // Shuffle array and pick a subset (for demo, use all)
-    // randomCategories.sort(() => 0.5 - Math.random());
-    // randomCategories.forEach(cat => {
-    //   const card = document.createElement('div');
-    //   card.className = 'category-card';
-    //   // Use a random image from Unsplash (for demo purposes)
-    //   const img = document.createElement('img');
-    //   img.className = 'category-image';
-    //   img.src = `https://source.unsplash.com/random/600x400?${cat}`;
-    //   img.alt = cat;
-    //   card.appendChild(img);
-    //   const label = document.createElement('div');
-    //   label.className = 'category-label';
-    //   label.textContent = cat;
-    //   card.appendChild(label);
-    //   // On click, fetch wallpapers for this category
-    //   card.addEventListener('click', () => {
-    //     currentQuery = cat;
-    //     currentPage = 1;
-    //     document.getElementById('wallpapersContainer').innerHTML = '';
-    //     fetchWallpapers(cat);
-    //   });
-    //   categoriesContainer.appendChild(card);
-    // });
-    // // For larger screens, enable clicking the arrow to scroll left in the categories container
-    // const categoriesArrow = document.getElementById('categoriesArrow');
-    // if (categoriesArrow) {
-    //   categoriesArrow.addEventListener('click', () => {
-    //     categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' });
-    //   });
-    // }
+
 
     /* ===== Music Player Functionality using Jamendo API ===== */
     const audio = new Audio();
