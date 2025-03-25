@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="BADASS WALLPAPERS – HOME OF LEGENDARY WALLPAPERS, WALLPAPER EDITS AND WALLPAPER RELATED CONTENT" />
-  <title>Badass Wallpapers</title>
+  <meta name="description" content="ASTRAL WALLPAPERS – HOME OF LEGENDARY WALLPAPERS, WALLPAPER EDITS AND WALLPAPER RELATED CONTENT" />
+  <title>Astral Wallpapers</title>
   <!-- Favicon (Head Title Image) -->
   <link rel="icon" href="../Favcon.jpg" type="image/png"/>
   <!-- Vercel Analytics -->
@@ -131,58 +131,7 @@
       border-radius: 5px;
       border: none;
     }
-    /* CATEGORIES SECTION */
-    /* .categories {
-      margin: 1rem auto;
-      padding: 1rem;
-      max-width: 1200px;
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-    }
-    .category-card {
-      flex: 0 0 auto;
-      background: var(--gray);
-      border-radius: 15px;
-      overflow: hidden;
-      position: relative;
-      min-width: 200px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .category-card:hover {
-      transform: translateY(-5px);
-    }
-    .category-image {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      display: block;
-    }
-    .category-label {
-      padding: 0.8rem;
-      text-align: center;
-      font-weight: bold;
-      background: var(--primary);
-      color: var(--dark);
-    } */
-    /* SVG Arrow for categories on larger screens */
-    /* .categories-wrapper {
-      position: relative;
-    } */
-    /* .arrow-icon {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.7);
-      border-radius: 50%;
-      padding: 0.5rem;
-      cursor: pointer;
-      z-index: 10;
-    } */
+    
     @media (min-width: 768px) {
       .categories {
         display: grid;
@@ -289,6 +238,26 @@
       width: 100px;
       accent-color: var(--primary);
     }
+    @media  (min-width: 768px) {
+      .header h1 {
+        font-size: 35px;
+      }
+    }
+    @media  (min-width: 757px) {
+      .header h1 {
+        font-size: 30px;
+      }
+    }
+    @media  (min-width: 738px) {
+      .header h1 {
+        font-size: 25px;
+      }
+    }
+    @media  (min-width: 425px) {
+      .header h1 {
+        font-size: 35px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -324,7 +293,7 @@
 
   <!-- HEADER & SEARCH -->
   <header class="header">
-    <h1>BADASS WALLPAPERS</h1>
+    <h1>ASTRAL WALLPAPERS</h1>
     <div class="search-container">
       <input type="search" id="searchInput" placeholder="Search for wallpapers..." />
       <button id="searchButton">Search</button>
@@ -520,7 +489,7 @@
     function shareWallpaper(url) {
       if (navigator.share) {
         navigator.share({
-          title: 'Check out this badass wallpaper!',
+          title: 'Check out this astral wallpaper!',
           url: currentImageUrl
         }).catch(console.error);
       } else {
@@ -533,7 +502,7 @@
         .then(blob => {
           const link = document.createElement('a');
           link.href = URL.createObjectURL(blob);
-          link.download = `badass-wallpaper-${Date.now()}.jpg`;
+          link.download = `astral-wallpaper-${Date.now()}.jpg`;
           document.body.appendChild(link);
           link.click();
           URL.revokeObjectURL(link.href);

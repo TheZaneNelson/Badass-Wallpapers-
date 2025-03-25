@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="BADASS WALLPAPERS - Premium Wallpaper Collection"
+      content="ASTRAL WALLPAPERS - Premium Wallpaper Collection"
     />
     <meta name="author" content="TheZaneNelson" />
     <meta
       name="keywords"
-      content="wallpapers, HD wallpaper, wallpaper edit, innovative wallpaper, live wallpaper, anime, image, decorate phone, novo code"
+      content="wallpapers, HD wallpaper, wallpaper edit, innovative wallpaper, live wallpaper, anime, image, decorate phone, novo code, ASTRAL WALLPAPERS,astral wallpaper"
     />
-    <title>BADASS WALLPAPERS - Login</title>
+    <title>ASTRAL WALLPAPERS - Login</title>
     <!-- Favicon (Head Title Image) -->
     <link rel="icon" href="assets/Favcon.jpg" type="image/png" />
     <!-- Vercel Analytics -->
@@ -56,10 +56,16 @@
         align-items: center;
         background: rgba(0, 0, 0, 0.7);
       }
+
+      .header-container > h1 {
+        color: #facc15;
+        font-weight: 800;
+        animation: slideInFromLeft 1s ease-out;
+      }
+
       .header-logo {
         height: 40px;
         animation: slideInFromLeft 1s ease-out;
-  
       }
       /* Login Container */
       .login-container {
@@ -170,6 +176,48 @@
           height: 30px;
         }
       }
+
+      @media (max-width: 533px) {
+        .header-container > h1 {
+          font-size: 18px;
+        }
+
+        .social-icon {
+          width: 35px;
+          height: 35px;
+        }
+      }
+
+      @media (max-width: 361px) {
+        .header-container > h1 {
+          font-size: 15px;
+        }
+
+        .social-icon {
+          width: 30px;
+          height: 30px;
+        }
+
+        #playBtn{
+          width: 30px;
+        height: 30px;
+        }
+
+        #volume {
+          width: 80px;
+        }
+      }
+
+      @media (max-width: 323px) {
+        .header-container > h1 {
+          font-size: 10px;
+        }
+
+        .social-icon {
+          width: 20px;
+          height: 20px;
+        }
+      }
     </style>
   </head>
   <body onload="setRandomBackground()">
@@ -179,7 +227,7 @@
     <!-- Header -->
     <div class="header-container">
       <img src="assets/yt banner bw (1).png" class="header-logo" alt="Logo" />
-      <h1 style="color: #facc15">BADASS WALLPAPERS</h1>
+      <h1>BADASS WALLPAPERS</h1>
       <img src="assets/yt banner bw (1).png" class="header-logo" alt="Logo" />
     </div>
 
