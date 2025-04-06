@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta http-equiv="Cache-Control" content="max-age=3600, must-revalidate">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="ASTRAL WALLPAPERS – HOME OF LEGENDARY WALLPAPERS, WALLPAPER EDITS AND WALLPAPER RELATED CONTENT" />
@@ -243,10 +244,50 @@
         font-size: 35px;
       }
     }
+    @media (max-width: 768px) {
+      /* .mobile-menu-toggle {
+        display: block;
+      }
+      .api-selector, .resolution-selector {
+        position: static;
+        margin: 10px;
+      }
+      .music-player {
+        bottom: 70px;
+        right: 10px;
+        padding: 8px;
+      }
+      .user-dropdown {
+        top: 60px;
+      } */
+      /* Error Message Styles */
+      .error-message {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ef4444;
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        z-index: 2000;
+      }
+      /* Cache Warning */
+      .cache-status {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0,0,0,0.7);
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 0.8rem;
+      }
+    }
     @media  (min-width: 757px) {
       .header h1 {
         font-size: 30px;
       }
+      
     }
     @media  (min-width: 738px) {
       .header h1 {
@@ -337,22 +378,22 @@
       pexels: {
         key: "3yhCBBe3dnxXnCuegDHCWL1cskFMjC4nKsS1kxZOnOkB6H5r201RRxZX",
         url: "https://api.pexels.com/v1/",
-        perPage: 15
+        perPage: 30
       },
       unsplash: {
         key: "0EeQLoHEG7OrkYuoy-W-j1k0YoOTkCey3CLBwoWMOWI",
         url: "https://api.unsplash.com/search/photos",
-        perPage: 15
+        perPage: 5
       },
       pixabay: {
         key: "47875255-071b1a2c59cc7a2a1fb0899ef",
         url: "https://pixabay.com/api/",
-        perPage: 15
+        perPage: 5
       },
       flickr: {
         key: "5753551e669dcd654f97e31fc0cedfb2",
         url: "https://api.flickr.com/services/rest/",
-        perPage: 15
+        perPage: 10
       }
     };
     let currentPage = 1;
@@ -483,7 +524,7 @@
       fetchWallpapers(currentQuery);
     });
     // Initialize with default query
-    fetchWallpapers('cat');
+    fetchWallpapers('wildlife');
 
     /* ===== Share and Download Functions ===== */
     function shareWallpaper(url) {
