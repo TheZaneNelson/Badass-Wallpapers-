@@ -15,6 +15,15 @@
     <title>ASTRAL WALLPAPERS - Login</title>
     <!-- Favicon (Head Title Image) -->
     <link rel="icon" href="assets/Favcon.jpg" type="image/png" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BSM5V312FG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-BSM5V312FG');
+    </script>
     <!-- Vercel Analytics -->
     <script>
       window.va =
@@ -198,9 +207,9 @@
           height: 30px;
         }
 
-        #playBtn{
+        #playBtn {
           width: 30px;
-        height: 30px;
+          height: 30px;
         }
 
         #volume {
@@ -306,8 +315,8 @@
     <!-- Scripts -->
 
     <script>
-        // Check if user has visited before
-      const hasVisited = localStorage.getItem('hasVisited');
+      // Check if user has visited before
+      const hasVisited = localStorage.getItem("hasVisited");
 
       if (hasVisited) {
         // If returning within 7 days, redirect to homepage
@@ -316,24 +325,24 @@
         const diffDays = (now - lastVisit) / (1000 * 60 * 60 * 24);
 
         if (diffDays < 7) {
-          window.location.href = 'pages/homepage.html';
+          window.location.href = "pages/homepage.html";
         } else {
           // Reset visit timestamp if 7 days passed
-          localStorage.setItem('hasVisited', new Date());
+          localStorage.setItem("hasVisited", new Date());
         }
       } else {
         // First time visitor
-        localStorage.setItem('hasVisited', new Date());
+        localStorage.setItem("hasVisited", new Date());
 
         // Send data to server
-        fetch('/log-visit', {
-          method: 'POST',
-          body: JSON.stringify({ 
+        fetch("/log-visit", {
+          method: "POST",
+          body: JSON.stringify({
             timestamp: new Date().toString(),
             userAgent: navigator.userAgent,
-            ip: 'auto' // we'll fetch this server-side
+            ip: "auto", // we'll fetch this server-side
           }),
-          headers: { 'Content-Type': 'application/json' }
+          headers: { "Content-Type": "application/json" },
         });
       }
     </script>
