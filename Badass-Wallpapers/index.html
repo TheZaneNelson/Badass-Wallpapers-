@@ -304,6 +304,39 @@
     </div>
 
     <!-- Scripts -->
+
+    <script>
+        // Check if user has visited before
+      const hasVisited = localStorage.getItem('hasVisited');
+
+      if (hasVisited) {
+        // If returning within 7 days, redirect to homepage
+        const lastVisit = new Date(hasVisited);
+        const now = new Date();
+        const diffDays = (now - lastVisit) / (1000 * 60 * 60 * 24);
+
+        if (diffDays < 7) {
+          window.location.href = '/homepage.html';
+        } else {
+          // Reset visit timestamp if 7 days passed
+          localStorage.setItem('hasVisited', new Date());
+        }
+      } else {
+        // First time visitor
+        localStorage.setItem('hasVisited', new Date());
+
+        // Send data to server
+        fetch('/log-visit', {
+          method: 'POST',
+          body: JSON.stringify({ 
+            timestamp: new Date().toString(),
+            userAgent: navigator.userAgent,
+            ip: 'auto' // we'll fetch this server-side
+          }),
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    </script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
       // Random Background Rotation
