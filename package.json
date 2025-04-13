@@ -2,9 +2,13 @@
   "name": "server",
   "version": "1.0.0",
   "main": "index.js",
+  
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+    "start": "node server.js",
+    "build": "echo 'No build needed for Node.js backend' && exit 0",
+    "dev": "nodemon server.js",
+    "test": "jest"
+  }
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -16,6 +20,10 @@
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "mongodb": "4.1",
-    "mongoose": "^8.13.2"
+    "mongoose": "^8.13.2",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
