@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog & News - ASTRAL WALLPAPERS</title>
+  <!-- Favicon (Head Title Image) -->
+  <link rel="icon" href="../assets/Favcon.jpg" type="image/png"/>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BSM5V312FG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-BSM5V312FG');
+  </script>
+  <!-- Vercel Analytics -->
+  <script>
+    window.va =
+      window.va ||
+      function () {
+        (window.vaq = window.vaq || []).push(arguments);
+      };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <!-- End Vercel Analytics -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #facc15;
+      --dark: #1a202c;
+      --gray: #2d3748;
+      --light: #e2e8f0;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark);
+      color: white;
+    }
+    /* HEADER */
+    .header {
+      background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('../assets/yt banner bw (1).png');
+      background-size: cover;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      color: var(--primary);
+    }
+    /* BLOG CONTAINER */
+    .blog-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .blog-post {
+      background: rgba(45, 55, 72, 0.7);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .blog-post h2 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+    .post-date {
+      color: var(--light);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .read-more {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: var(--primary);
+      color: var(--dark);
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .read-more:hover {
+      background: #eab308;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.5rem 1rem;
+      background: var(--primary);
+      color: var(--dark);
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .back-btn:hover {
+      background: #eab308;
+    }
+    /* MUSIC PLAYER */
+    .music-player {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.7);
+      padding: 1rem;
+      border-radius: 15px;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      z-index: 1000;
+    }
+    .music-player button {
+      background: var(--primary);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .music-player input[type="range"] {
+      width: 100px;
+      accent-color: var(--primary);
+    }
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      .blog-container {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1>BLOG & NEWS</h1>
+  </header>
+
+  <!-- Blog Content -->
+  <div class="blog-container">
+    <div class="blog-post">
+      <h2>New Wallpaper Collection: Cosmic Dreams</h2>
+      <div class="post-date">June 15, 2024</div>
+      <p>We're excited to announce our latest collection - Cosmic Dreams! This set features stunning space-themed wallpapers with vibrant nebulae and distant galaxies. Perfect for those who love astronomy or just want a breathtaking background.</p>
+      <a href="#" class="read-more">Read More</a>
+    </div>
+
+    <div class="blog-post">
+      <h2>Website Update: Improved Search</h2>
+      <div class="post-date">May 28, 2024</div>
+      <p>We've completely revamped our search functionality to make it easier to find your perfect wallpaper. Now with filters by color, theme, and resolution. Try it out and let us know what you think!</p>
+      <a href="#" class="read-more">Read More</a>
+    </div>
+
+    <div class="blog-post">
+      <h2>Wallpaper of the Month Contest</h2>
+      <div class="post-date">May 5, 2024</div>
+      <p>Submit your original wallpaper designs for a chance to be featured on our homepage and win premium membership! Deadline is May 25th. See contest rules for details.</p>
+      <a href="#" class="read-more">Read More</a>
+    </div>
+
+    <a href="homepage.html" class="back-btn">Back to Home</a>
+  </div>
+
+  <!-- Music Player -->
+  <div class="music-player">
+    <button id="playBtn">⏸</button>
+    <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5" />
+  </div>
+
+  <script>
+    /* ===== Music Player Functionality ===== */
+    const audio = new Audio();
+    let isPlaying = true;
+    audio.volume = 0.5;
+
+    // Restore saved music state
+    const savedState = localStorage.getItem("musicState");
+    if (savedState) {
+      const state = JSON.parse(savedState);
+      audio.volume = state.volume || 0.5;
+      audio.currentTime = state.currentTime || 0;
+      if (state.isPlaying) {
+        audio.play().catch(console.error);
+        isPlaying = true;
+      } else {
+        isPlaying = false;
+        document.getElementById("playBtn").textContent = "▶";
+      }
+    } else {
+      audio.src = "../assets/fallback-music.mp3";
+      audio.play().catch(console.error);
+    }
+
+    // Play/Pause button
+    document.getElementById("playBtn").addEventListener("click", () => {
+      if (isPlaying) {
+        audio.pause();
+        document.getElementById("playBtn").textContent = "▶";
+      } else {
+        audio.play().catch(console.error);
+        document.getElementById("playBtn").textContent = "⏸";
+      }
+      isPlaying = !isPlaying;
+      localStorage.setItem("musicState", JSON.stringify({
+        isPlaying: isPlaying,
+        currentTime: audio.currentTime,
+        volume: audio.volume
+      }));
+    });
+
+    // Volume control
+    document.getElementById("volume").addEventListener("input", (e) => {
+      audio.volume = e.target.value;
+      localStorage.setItem("musicState", JSON.stringify({
+        isPlaying: isPlaying,
+        currentTime: audio.currentTime,
+        volume: audio.volume
+      }));
+    });
+  </script>
+</body>
+</html>
