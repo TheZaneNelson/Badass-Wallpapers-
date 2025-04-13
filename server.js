@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cron = require('node-cron');
+const os = require('os'); 
 
 // Debug environment variables
 console.log("[CONFIG] Node Environment:", process.env.NODE_ENV);
@@ -55,7 +56,7 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cors({
   origin: process.env.NODE_ENV === 'development' 
     ? ['http://localhost:3000'] 
-    : ['https://your-production-domain.com'],
+    : ['https://astral-wallpapers.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -113,7 +114,7 @@ app.get('/api/healthcheck', async (req, res) => {
     await healthCheckCollection.insertOne({
       timestamp: new Date(),
       status: 'healthy',
-      server: os.hostname()
+      server: process.env.HOSTNAME || 'render'
     });
     
     // Test read operation
