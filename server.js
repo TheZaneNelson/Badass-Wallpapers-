@@ -4,13 +4,108 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cron = require('node-cron');
-const os = require('os'); 
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
+const xss = require('xss');
+const compression = require('compression');
+const morgan = require('morgan');
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
 
-// Debug environment variables
-console.log("[CONFIG] Node Environment:", process.env.NODE_ENV);
-console.log("[CONFIG] MongoDB URI:", process.env.MONGO_URI ? process.env.MONGO_URI.substring(0, 30) + '...' : 'Not found');
+// Initialize Express
+const app = express();
 
-// Enhanced Database Connection
+// ======================
+// SECURITY MIDDLEWARE
+// ======================
+
+// 1. Helmet for security headers
+app.use(helmet());
+
+// 2. Body parsers with size limits
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+
+// 3. Data Sanitization against XSS
+app.use((req, res, next) => {
+  if (req.body) {
+    req.body = JSON.parse(xss(JSON.stringify(req.body)));
+  }
+  next();
+});
+
+// 4. Custom NoSQL injection sanitizer (replaces express-mongo-sanitize)
+app.use((req, _, next) => {
+  const sanitize = (obj) => {
+    if (!obj || typeof obj !== 'object') return;
+    Object.keys(obj).forEach(key => {
+      if (key.includes('$')) {
+        delete obj[key];
+        console.log(`⚠️ Sanitized malicious key: ${key}`);
+      }
+      if (typeof obj[key] === 'object') {
+        sanitize(obj[key]);
+      }
+    });
+  };
+  
+  sanitize(req.body);
+  sanitize(req.query);
+  next();
+});
+
+// 5. Prevent Parameter Pollution
+app.use(hpp());
+
+// 6. Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Too many requests from this IP, please try again later'
+});
+app.use('/api', limiter);
+
+// ======================
+// APPLICATION MIDDLEWARE
+// ======================
+
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'development' 
+    ? ['http://localhost:3000'] 
+    : ['https://astral-wallpapers.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
+// Logging setup
+if (process.env.NODE_ENV === 'production') {
+  const accessLogStream = fs.createWriteStream(
+    path.join(__dirname, 'access.log'),
+    { flags: 'a' }
+  );
+  app.use(morgan('combined', { stream: accessLogStream }));
+  console.log('📝 Production logging enabled');
+} else {
+  app.use(morgan('dev'));
+  console.log('🔍 Development logging enabled');
+}
+
+// Compression
+app.use(compression());
+console.log('🗜️ Response compression enabled');
+
+// ======================
+// DATABASE CONNECTION
+// ======================
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
@@ -26,15 +121,15 @@ const connectDB = async () => {
 
     // Connection monitoring
     mongoose.connection.on('connected', () => {
-      console.log('Mongoose connected to DB');
+      console.log('🔄 Mongoose connected to DB');
     });
 
     mongoose.connection.on('error', (err) => {
-      console.error('Mongoose connection error:', err);
+      console.error('❌ Mongoose connection error:', err);
     });
 
     mongoose.connection.on('disconnected', () => {
-      console.warn('Mongoose disconnected');
+      console.warn('⚠️ Mongoose disconnected');
     });
 
   } catch (err) {
@@ -49,19 +144,9 @@ const connectDB = async () => {
   }
 };
 
-// Initialize Express
-const app = express();
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(cors({
-  origin: process.env.NODE_ENV === 'development' 
-    ? ['http://localhost:3000'] 
-    : ['https://astral-wallpapers.vercel.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// User Schema with indexes
+// ======================
+// DATA MODELS
+// ======================
 const userSchema = new mongoose.Schema({
   name: { type: String, required: [true, 'Name is required'] },
   email: { 
@@ -90,21 +175,29 @@ const userSchema = new mongoose.Schema({
 });
 
 // Add indexes
-userSchema.index({ name: 'text', email: 1 }); // Compound index
+userSchema.index({ name: 'text', email: 1 });
 const User = mongoose.model('User', userSchema);
+console.log('📊 User model and indexes initialized');
 
-// API Routes
+// ======================
+// ROUTES
+// ======================
+
+// API Status Endpoint
 app.get('/', (req, res) => {
+  console.log('ℹ️ API status checked');
   res.json({
     status: 'API running',
     version: '1.0.0',
     environment: process.env.NODE_ENV,
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    documentation: `${req.protocol}://${req.get('host')}/api-docs`
   });
 });
 
 // Healthcheck Endpoint
 app.get('/api/healthcheck', async (req, res) => {
+  console.log('🩺 Healthcheck initiated');
   try {
     // Test connection
     await mongoose.connection.db.admin().ping();
@@ -124,13 +217,17 @@ app.get('/api/healthcheck', async (req, res) => {
       .limit(1)
       .toArray();
 
+    console.log('✅ Healthcheck completed successfully');
     res.json({
       status: 'healthy',
       dbConnection: 'active',
       lastCheck: lastCheck[0]?.timestamp || 'No records found',
-      checksInDB: await healthCheckCollection.countDocuments()
+      checksInDB: await healthCheckCollection.countDocuments(),
+      memoryUsage: process.memoryUsage(),
+      loadAvg: os.loadavg()
     });
   } catch (err) {
+    console.error('❌ Healthcheck failed:', err.message);
     res.status(500).json({
       status: 'unhealthy',
       error: err.message,
@@ -140,15 +237,31 @@ app.get('/api/healthcheck', async (req, res) => {
 });
 
 // User Routes
-app.post('/save-user', async (req, res) => {
+const validateUserInput = (req, res, next) => {
+  console.log('🔍 Validating user input');
+  const { name, email } = req.body;
+  if (!name || !email) {
+    console.log('❌ Validation failed: Name and email are required');
+    return res.status(400).json({
+      success: false,
+      error: 'Name and email are required'
+    });
+  }
+  next();
+};
+
+app.post('/api/save-user', validateUserInput, async (req, res) => {
+  console.log('📥 Received request to save user');
   try {
     const user = new User(req.body);
     await user.save();
+    console.log('✅ User saved successfully:', user.email);
     res.status(201).json({
       success: true,
       data: user
     });
   } catch (err) {
+    console.error('❌ Error saving user:', err.message);
     const errors = {};
     if (err.errors) {
       Object.keys(err.errors).forEach(key => {
@@ -160,12 +273,13 @@ app.post('/save-user', async (req, res) => {
       success: false,
       error: err.message,
       errors,
-      code: err.code // Useful for duplicate key errors
+      code: err.code
     });
   }
 });
 
-app.get('/users', async (req, res) => {
+app.get('/api/users', async (req, res) => {
+  console.log('📥 Received request for users list');
   try {
     const { page = 1, limit = 10, search } = req.query;
     const query = search 
@@ -180,6 +294,7 @@ app.get('/users', async (req, res) => {
 
     const total = await User.countDocuments(query);
 
+    console.log(`📊 Returning ${users.length} users out of ${total}`);
     res.json({
       success: true,
       count: users.length,
@@ -188,6 +303,7 @@ app.get('/users', async (req, res) => {
       data: users
     });
   } catch (err) {
+    console.error('❌ Error fetching users:', err.message);
     res.status(500).json({
       success: false,
       error: 'Server error',
@@ -196,18 +312,56 @@ app.get('/users', async (req, res) => {
   }
 });
 
-// Scheduled Healthchecks
-cron.schedule('*/30 * * * *', async () => { // Every 30 minutes
+// ======================
+// ERROR HANDLING
+// ======================
+app.use((err, req, res, next) => {
+  console.error('🔥 Unhandled error:', err.stack);
+  res.status(500).json({
+    success: false,
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+// 404 Handler
+app.use((req, res) => {
+  console.log('🔍 Requested endpoint not found:', req.originalUrl);
+  res.status(404).json({
+    success: false,
+    error: 'Endpoint not found',
+    availableEndpoints: {
+      root: '/',
+      healthcheck: '/api/healthcheck',
+      saveUser: 'POST /api/save-user',
+      getUsers: 'GET /api/users'
+    }
+  });
+});
+
+// ======================
+// SCHEDULED TASKS
+// ======================
+cron.schedule('*/30 * * * *', async () => {
+  console.log('⏰ Running scheduled healthcheck...');
   try {
     const check = await mongoose.connection.db.admin().ping();
     console.log('🔄 Scheduled healthcheck:', check.ok === 1 ? 'OK' : 'WARNING');
+    
+    console.log('📈 System Stats:', {
+      memory: process.memoryUsage(),
+      load: os.loadavg(),
+      uptime: os.uptime()
+    });
   } catch (err) {
     console.error('❌ Scheduled healthcheck failed:', err.message);
-    // Here you would add your alerting logic (email, Slack, etc.)
   }
 });
+console.log('⏰ Scheduled tasks initialized');
 
-// Start Server
+// ======================
+// SERVER INITIALIZATION
+// ======================
 (async () => {
   await connectDB();
   const port = process.env.PORT || 3000;
@@ -215,27 +369,22 @@ cron.schedule('*/30 * * * *', async () => { // Every 30 minutes
     console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${port}`);
     console.log(`🔗 Base URL: http://localhost:${port}`);
     console.log(`📝 API Docs: http://localhost:${port}/api-docs`);
+    console.log('🛡️ Security Headers: Enabled');
+    console.log('📊 Rate Limiting: Enabled (100 requests/15min)');
   });
 
   // Graceful shutdown
-  process.on('SIGTERM', () => {
-    console.log('SIGTERM received. Shutting down gracefully...');
-    server.close(() => {
-      mongoose.connection.close(false, () => {
-        console.log('MongoDB connection closed');
-        process.exit(0);
-      });
+  const shutdown = async () => {
+    console.log('🛑 Shutting down gracefully...');
+    server.close(async () => {
+      await mongoose.connection.close(false);
+      console.log('✅ MongoDB connection closed');
+      process.exit(0);
     });
-  });
-
-  process.on('SIGINT', () => {
-    server.close(() => {
-      mongoose.connection.close(false, () => {
-        console.log('MongoDB connection closed');
-        process.exit(0);
-      });
-    });
-  });
+  };
+  
+  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
 })();
 
-module.exports = app; // For testing
+module.exports = app;

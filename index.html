@@ -13,9 +13,22 @@
       content="wallpapers, HD wallpaper, wallpaper edit, innovative wallpaper, live wallpaper, anime, image, decorate phone, novo code, ASTRAL WALLPAPERS,astral wallpaper"
     />
     <title>ASTRAL WALLPAPERS - Login</title>
-    <!-- Favicon (Head Title Image) -->
+    <!-- Favicon -->
     <link rel="icon" href="assets/Favcon.jpg" type="image/png" />
-    <!-- Google tag (gtag.js) -->
+
+    <!-- Preload critical resources -->
+    <link
+      rel="preload"
+      href="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"
+      as="script"
+    />
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap"
+      as="style"
+    />
+
+    <!-- Google Analytics -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-BSM5V312FG"
@@ -26,9 +39,9 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-BSM5V312FG");
     </script>
+
     <!-- Vercel Analytics -->
     <script>
       window.va =
@@ -39,6 +52,8 @@
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
     <!-- End Vercel Analytics -->
+
+    <!-- Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap"
       rel="stylesheet"
@@ -471,36 +486,39 @@
       });
 
       // Form Submission
-      document.getElementById("loginForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
-  
-  const userData = {
-    name: this.elements[0].value,
-    email: this.elements[1].value,
-    age: this.elements[2].value,
-    gender: document.querySelector('input[name="gender"]:checked').value
-  };
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
 
-  try {
-    const response = await fetch('http://localhost:3000/save-user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData)
-    });
+          const userData = {
+            name: this.elements[0].value,
+            email: this.elements[1].value,
+            age: this.elements[2].value,
+            gender: document.querySelector('input[name="gender"]:checked')
+              .value,
+          };
 
-    if (response.ok) {
-      localStorage.setItem("user", JSON.stringify(userData));
-      window.location.href = "pages/welcome-page.html";
-    } else {
-      alert('Error saving data. Please try again.');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    alert('Connection failed. Please check your internet.');
-  }
-});
+          try {
+            const response = await fetch("http://localhost:3000/save-user", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(userData),
+            });
+
+            if (response.ok) {
+              localStorage.setItem("user", JSON.stringify(userData));
+              window.location.href = "pages/welcome-page.html";
+            } else {
+              alert("Error saving data. Please try again.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Connection failed. Please check your internet.");
+          }
+        });
     </script>
   </body>
 </html>
